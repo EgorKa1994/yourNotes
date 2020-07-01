@@ -7,9 +7,14 @@ export class Form {
     this.inputContain = document.querySelector('#contain');
 
     this.idCounter = localStorage.getItem('id') || 0;
-    this.noteId;
+    this.data = JSON.parse(localStorage.getItem('data')) || [];
 
     this.closeButton = document.querySelector('#closeModal');
+
+    this.noteList = document.querySelector('#noteList');
+    this.oneNoteContent = document.querySelector('#oneNoteContent');
+    this.noteEditor = document.querySelector('.contentEditor');
+    this.list = new List(this.noteList);
 
     this._init();
   }
@@ -60,7 +65,7 @@ export class Form {
 
     localStorage.setItem('data', JSON.stringify(this.data));
 
-    this.createNoteList(this.data);
+    this.list.render(this.data);
 
     this._checkEmptinessOfNoteDescription();
 
@@ -84,5 +89,28 @@ export class Form {
     } else {
       this.noteEditor.classList.remove('invisible');
     }
+  }
+
+  _parseNumber(num) {
+    let parsedNum = num;
+
+    if (parsedNum < 10) {
+      return '0' + parsedNum;
+    } else {
+      return parsedNum;
+    }
+  }
+
+  _getDate() {
+    let now = new Date();
+
+    let month = this._parseNumber(now.getMonth());
+    let year = now.getFullYear();
+    let day = this._parseNumber(now.getDate());
+
+    let hours = this._parseNumber(now.getHours());
+    let minutes = this._parseNumber(now.getMinutes());
+
+    return `${day}.${month}.${year} ${hours}:${minutes}`;
   }
 }
