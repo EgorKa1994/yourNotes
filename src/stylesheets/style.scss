@@ -1,0 +1,110 @@
+
+body {
+  color: white;
+  background: rgb(176, 193, 213);
+  background: linear-gradient(
+    180deg,
+    rgba(176, 193, 213, 1) 0%,
+    rgba(188, 201, 217, 1) 18%,
+    rgba(217, 225, 236, 1) 62%,
+    rgba(230, 235, 241, 1) 100%
+  );
+  height: 100vh;
+}
+
+header {
+  height: 150px;
+}
+
+.bg-hand {
+  background-color: white;
+  background-image: url(../img/bg_main.jpg);
+  background-position: left top;
+  background-repeat: no-repeat;
+  min-height: 500px;
+  background-size: 100%;
+  margin-bottom: 100px;
+}
+
+.title {
+  margin-left: 45%;
+  h1 {
+    font-family: 'bangersregular';
+    text-shadow: -4px -4px 2px rgba(150, 150, 150, 1);
+    font-size: 3.5rem;
+  }
+}
+
+main {
+  cursor: default;
+  padding-top: 100px;
+  h2 {
+    text-align: center;
+    font-family: 'bangersregular';
+    text-shadow: -4px -4px 2px rgba(150, 150, 150, 1);
+  }
+}
+
+form {
+  color: rgb(176, 193, 213);
+  font-weight: 700;
+  textarea {
+    resize: none;
+  }
+}
+
+.data-list {
+  background-color: #ccdde3;
+  border-radius: 25px;
+  padding: 10px;
+  min-height: 300px;
+  border: 2px solid white;
+  position: relative;
+  ul {
+    padding-left: 0;
+    li {
+      list-style-type: none;
+      cursor: pointer;
+      color: white;
+      font-family: 'bangersregular';
+      padding: 5px 10px;
+      border-bottom: 1px solid rgba(150, 150, 150, 1);
+      h3 {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .active {
+    background-color: rgb(176, 193, 213);
+    padding-left: 10px;
+    text-shadow: -3px -3px 3px rgba(150, 150, 150, 1);
+  }
+}
+
+#oneNoteContent{
+  font-family: 'bangersregular';
+  color: rgba(150, 150, 150, 1);
+  font-size: 1.75rem;
+  p {
+    font-size: 1rem;
+  }
+}
+
+.contentEditor{
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  width: 50%;
+  button{
+    display: inline-block;
+    width: 30%;
+    margin: 0 2%;
+  }
+}
+
+.invisible{
+  display: none;
+}
+
+
