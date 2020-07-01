@@ -1,3 +1,5 @@
+import { List } from './list';
+
 export class Form {
   constructor(form) {
     this.form = form;
@@ -6,8 +8,6 @@ export class Form {
 
     this.idCounter = localStorage.getItem('id') || 0;
     this.noteId;
-
-    this.oneNoteContent = document.querySelector('#oneNoteContent');
 
     this.closeButton = document.querySelector('#closeModal');
 

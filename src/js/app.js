@@ -1,6 +1,8 @@
-import Note from './note.js';
+import { List } from './list';
 
 let data = JSON.parse(localStorage.getItem('data')) || [];
 
-const yourNote = new Note();
-yourNote.createNoteList(data);
+let listNode = document.querySelector('#noteList');
+let list = new List(listNode);
+
+list.render(data);
