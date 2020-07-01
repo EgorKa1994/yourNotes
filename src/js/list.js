@@ -40,7 +40,7 @@ export class List {
     // Добавление описания заметки
     this.data.forEach((item) => {
       if (this.noteId == item.id) {
-        this.content.render(item, this.data);
+        this.content.render(item, this.render.bind(this), this.data);
       }
     });
 

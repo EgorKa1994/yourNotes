@@ -2,8 +2,10 @@ export class Content {
   constructor(container) {
     this.container = container;
 
-    this.data = [];
+    this.noteInfo = {};
     this.noteId = null;
+    this.updateList = null;
+    this.data = [];
 
     this.noteEditor = document.querySelector('.contentEditor');
     this.removeButton = document.querySelector('#removeBtn');
@@ -44,10 +46,12 @@ export class Content {
     // Скрывает или добавляет кнопки удаления или редактирования заметки
     this._checkEmptinessOfNoteDescription(this.container);
 
-    // this.createNoteList(this.data);
+    this.updateList(this.data);
   }
 
-  render(noteInfo, data) {
+  render(noteInfo, updateList, data) {
+    this.noteInfo = noteInfo;
+    this.updateList = updateList;
     this.data = data;
     this.noteId = noteInfo.id;
 
