@@ -6,10 +6,30 @@ export class Content {
     this.noteId = null;
     this.updateList = null;
     this.data = [];
+  }
 
-    this.noteEditor = document.querySelector('.contentEditor');
-    this.removeButton = document.querySelector('#removeBtn');
-    this.editButton = document.querySelector('#editBtn');
+  _createTrashButton(id) {
+    const btnNode = document.createElement('button');
+
+    btnNode.classList.value = 'btn btn-outline-danger py-0';
+    btnNode.textContent = 'Remove';
+    btnNode.setAttribute('data-id', id);
+
+    btnNode.addEventListener('click', this._handleRemovingOfNote.bind(this));
+
+    return btnNode;
+  }
+
+  _createEditButton(id) {
+    const btnNode = document.createElement('button');
+
+    btnNode.classList.value = 'btn btn-outline-warning py-0';
+    btnNode.textContent = 'Edit';
+    btnNode.setAttribute('data-id', id);
+
+    btnNode.addEventListener('click', this._handleEditingOfNote.bind(this));
+
+    return btnNode;
   }
 
   _handleEditingOfNote() {
@@ -28,23 +48,22 @@ export class Content {
 
     // Обновление LocalStorage
     localStorage.setItem('data', JSON.stringify(this.data));
+
+    this.updateList(this.data);
   }
 
-  _handleRemovingOfNote() {
+  _handleRemovingOfNote(e) {
     this.container.innerHTML = '';
-
+    let idOfNote = e.currentTarget.getAttribute('data-id');
     // Поиск по Id заметки и удаление ее из данных
     this.data.forEach((item, index) => {
-      if (this.noteId == item.id) {
+      if (idOfNote == item.id) {
         this.data.splice(index, 1);
       }
     });
 
     // Обновление LocalStorage
     localStorage.setItem('data', JSON.stringify(this.data));
-
-    // Скрывает или добавляет кнопки удаления или редактирования заметки
-    this._checkEmptinessOfNoteDescription(this.container);
 
     this.updateList(this.data);
   }
@@ -62,26 +81,10 @@ export class Content {
   `;
     this.container.innerHTML = this.container.innerHTML + template;
 
-    this._checkEmptinessOfNoteDescription(this.container);
-
-    // Удаление заметки
-    this.removeButton.addEventListener(
-      'click',
-      this._handleRemovingOfNote.bind(this)
-    );
-
-    // Редактирование заметки
-    this.editButton.addEventListener(
-      'click',
-      this._handleEditingOfNote.bind(this)
-    );
-  }
-
-  _checkEmptinessOfNoteDescription(containerForChecking) {
-    if (!containerForChecking.innerHTML) {
-      this.noteEditor.classList.add('invisible');
-    } else {
-      this.noteEditor.classList.remove('invisible');
-    }
+    let noteEditor = document.createElement('div');
+    noteEditor.classList.value = 'contentEditor d-flex justify-content-center';
+    noteEditor.append(this._createTrashButton(this.noteId));
+    noteEditor.append(this._createEditButton(this.noteId));
+    this.container.append(noteEditor);
   }
 }

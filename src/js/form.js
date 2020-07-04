@@ -7,7 +7,7 @@ export class Form {
     this.inputContain = document.querySelector('#contain');
 
     this.idCounter = localStorage.getItem('id') || 0;
-    this.data = JSON.parse(localStorage.getItem('data')) || [];
+    // this.data = [];
 
     this.closeButton = document.querySelector('#closeModal');
 
@@ -37,12 +37,14 @@ export class Form {
   _handleSubmit(e) {
     e.preventDefault();
 
+    let data = JSON.parse(localStorage.getItem('data'));
+
     // Получение данных о времени
     let timeData = this._getDate();
 
     // Проверка: редактирование или добавление заметки
     if (!this.oneNoteContent.classList.contains('underEdition')) {
-      this.data.push({
+      data.push({
         title: this.inputTitle.value,
         content: this.inputContain.value,
         time: timeData,
@@ -50,24 +52,24 @@ export class Form {
       });
 
       ++this.idCounter;
+
       localStorage.setItem('id', this.idCounter);
     } else {
       // Поиск заметки по Id и ее изменение
-      this.data.forEach((item, index) => {
-        if (this.noteId == item.id) {
-          this.data[index].title = this.inputTitle.value;
-          this.data[index].content = this.inputContain.value;
+      let noteId = localStorage.getItem('choosenNoteId');
+      data.forEach((item, index) => {
+        if (noteId == item.id) {
+          data[index].title = this.inputTitle.value;
+          data[index].content = this.inputContain.value;
         }
       });
     }
 
     this.oneNoteContent.classList.remove('underEdition');
 
-    localStorage.setItem('data', JSON.stringify(this.data));
+    localStorage.setItem('data', JSON.stringify(data));
 
-    this.list.render(this.data);
-
-    this._checkEmptinessOfNoteDescription();
+    this.list.render(data);
 
     this._resetForm(this.form);
 
@@ -81,14 +83,6 @@ export class Form {
     [...form.querySelectorAll('[type="hidden"]')].forEach((input) => {
       input.value = '';
     });
-  }
-
-  _checkEmptinessOfNoteDescription() {
-    if (!this.oneNoteContent.innerHTML) {
-      this.noteEditor.classList.add('invisible');
-    } else {
-      this.noteEditor.classList.remove('invisible');
-    }
   }
 
   _parseNumber(num) {

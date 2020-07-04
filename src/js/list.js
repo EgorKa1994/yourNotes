@@ -40,11 +40,10 @@ export class List {
     // Добавление описания заметки
     this.data.forEach((item) => {
       if (this.noteId == item.id) {
+        localStorage.setItem('choosenNoteId', this.noteId);
         this.content.render(item, this.render.bind(this), this.data);
       }
     });
-
-    // this._checkEmptinessOfNoteDescription();
   }
 
   render(data) {
