@@ -22,6 +22,8 @@ export class List {
   }
 
   _handleChoosenNote(e) {
+    // если это не добавить, не сохраняются данные this.data
+    this.data = JSON.parse(localStorage.getItem('data'));
     // Удаление разметки
     let arrOfNotes = this.container.querySelectorAll('li');
     arrOfNotes.forEach((item) => {
@@ -48,7 +50,6 @@ export class List {
 
   render(data) {
     this.data = data;
-
     this.container.innerHTML = '';
 
     data.forEach((item) => {

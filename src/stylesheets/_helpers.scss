@@ -1,0 +1,65 @@
+//---------------------variables----------------------------------------
+
+$primary-color: white;
+$bg-color-dark: rgb(176, 193, 213);
+$bg-color-light: rgba(217, 225, 236, 1);
+$bg-color-add1: rgba(188, 201, 217, 1);
+$bg-color-add2:rgba(230, 235, 241, 1);
+$shadow-color: rgba(150, 150, 150, 1);
+
+//-----------------------placeHolderSelectors---------------------------
+
+%shadow-style {
+  text-shadow: -4px -4px 2px $shadow-color;
+}
+
+%bg-style {
+  background-color: $primary-color;
+  background-image: url(../img/bg_main.jpg);
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+%li-style{
+  list-style-type: none;
+  color: $primary-color;
+  text-shadow: none;
+  border-bottom: 1px solid $shadow-color;
+}
+
+//---------------------mixins----------------------------------
+
+@mixin font-style($family, $size) {
+  font-family: $family;
+  font-size: $size;
+}
+
+@mixin position($posit, $bottom, $left) {
+  position: $posit;
+  bottom: $bottom;
+  left: $left;
+}
+
+@mixin pad($pad-top, $pad-right, $pad-bot, $pad-left) {
+  padding-top: $pad-top;
+  padding-right: $pad-right;
+  padding-bottom: $pad-bot;
+  padding-left: $pad-left;
+}
+
+@mixin marg($marg-top, $marg-right, $marg-bot, $marg-left) {
+  margin-top: $marg-top;
+  margin-right: $marg-right;
+  margin-bottom: $marg-bot;
+  margin-left: $marg-left;
+}
+
+@mixin min-height($minHeight) {
+  min-height: $minHeight;
+}
+
+@mixin height-width($height, $width) {
+  height: $height;
+  width: $width;
+}

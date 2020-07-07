@@ -1,4 +1,5 @@
 import { List } from './list';
+import { Content } from './content';
 
 export class Form {
   constructor(form) {
@@ -15,6 +16,9 @@ export class Form {
     this.oneNoteContent = document.querySelector('#oneNoteContent');
     this.noteEditor = document.querySelector('.contentEditor');
     this.list = new List(this.noteList);
+
+    this.oneNoteContent = document.querySelector('#oneNoteContent');
+    this.content = new Content(this.oneNoteContent);
 
     this._init();
   }
@@ -37,10 +41,12 @@ export class Form {
   _handleSubmit(e) {
     e.preventDefault();
 
-    let data = JSON.parse(localStorage.getItem('data'));
+    let data = JSON.parse(localStorage.getItem('data')) || [];
 
     // Получение данных о времени
     let timeData = this._getDate();
+
+    let noteId = localStorage.getItem('choosenNoteId');
 
     // Проверка: редактирование или добавление заметки
     if (!this.oneNoteContent.classList.contains('underEdition')) {
@@ -56,11 +62,11 @@ export class Form {
       localStorage.setItem('id', this.idCounter);
     } else {
       // Поиск заметки по Id и ее изменение
-      let noteId = localStorage.getItem('choosenNoteId');
       data.forEach((item, index) => {
         if (noteId == item.id) {
           data[index].title = this.inputTitle.value;
           data[index].content = this.inputContain.value;
+          this.content.render(item, null, data);
         }
       });
     }
@@ -70,6 +76,9 @@ export class Form {
     localStorage.setItem('data', JSON.stringify(data));
 
     this.list.render(data);
+
+    let choosenNote = document.getElementById(noteId);
+    if (choosenNote) choosenNote.classList.add('active');
 
     this._resetForm(this.form);
 
@@ -97,8 +106,7 @@ export class Form {
 
   _getDate() {
     let now = new Date();
-
-    let month = this._parseNumber(now.getMonth());
+    let month = this._parseNumber(now.getMonth() + 1);
     let year = now.getFullYear();
     let day = this._parseNumber(now.getDate());
 

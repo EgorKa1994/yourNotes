@@ -31,95 +31,97 @@
   </head>
 
   <body>
-    <div class="container px-3 bg-hand">
-      <header>
-        <div
-          class="d-flex py-4 justify-content-between align-items-center title"
-        >
-          <h1>Your notes</h1>
-          <button
-            type="button"
-            class="btn btn-outline-light px-5"
-            data-toggle="modal"
-            data-target="#exampleModal"
-            id="addNote"
+    <div class="appWrap">
+      <div class="container px-3 bg-hand">
+        <header>
+          <div
+            class="d-flex py-4 justify-content-between align-items-center title"
           >
-            Add note
-          </button>
-        </div>
-      </header>
-
-      <main>
-        <div class="row pb-5">
-          <div class="col-4 mx-3 data-list px-0" id="toDoList">
-            <h2>To-do list</h2>
-            <hr />
-            <ul id="noteList"></ul>
-          </div>
-          <div class="col-7 mx-3 data-list" id="noteDescription">
-            <h2>Description</h2>
-            <hr />
-            <div id="oneNoteContent" class="empty"></div>
-          </div>
-        </div>
-      </main>
-    </div>
-
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      data-backdrop="static"
-      data-keyboard="false"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-secondary" id="exampleModalLabel">
-              Note editor
-            </h5>
+            <h1>Your notes</h1>
             <button
               type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
+              class="btn btn-outline-light px-5"
+              data-toggle="modal"
+              data-target="#exampleModal"
+              id="addNote"
             >
-              <span aria-hidden="true">&times;</span>
+              Add note
             </button>
           </div>
-          <div class="modal-body text-dark">
-            <form data-method="POST" id="form">
-              <div class="input-group d-flex flex-column p-2">
-                <label for="title">Note title:</label>
-                <input type="text" name="title" id="title" required />
-              </div>
-              <div class="input-group d-flex flex-column p-2">
-                <label for="contain">Content:</label>
-                <textarea
-                  name="contain"
-                  id="contain"
-                  rows="5"
-                  required
-                ></textarea>
-              </div>
-            </form>
+        </header>
+
+        <main>
+          <div class="row pb-5">
+            <div class="col-4 mx-3 data-list px-0" id="toDoList">
+              <h2>To-do list</h2>
+              <hr />
+              <ul id="noteList"></ul>
+            </div>
+            <div class="col-7 mx-3 data-list" id="noteDescription">
+              <h2>Description</h2>
+              <hr />
+              <div id="oneNoteContent"></div>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary px-5"
-              data-dismiss="modal"
-              id="closeModal"
-            >
-              Close
-            </button>
-            <button type="submit" class="btn btn-light px-5" form="form">
-              Add
-            </button>
+        </main>
+      </div>
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        data-backdrop="static"
+        data-keyboard="false"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title text-secondary" id="exampleModalLabel">
+                Note editor
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body text-dark">
+              <form data-method="POST" id="form">
+                <div class="input-group d-flex flex-column p-2">
+                  <label for="title">Note title:</label>
+                  <input type="text" name="title" id="title" required />
+                </div>
+                <div class="input-group d-flex flex-column p-2">
+                  <label for="contain">Content:</label>
+                  <textarea
+                    name="contain"
+                    id="contain"
+                    rows="5"
+                    required
+                  ></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary px-5"
+                data-dismiss="modal"
+                id="closeModal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-light px-5" form="form">
+                Add
+              </button>
+            </div>
           </div>
         </div>
       </div>

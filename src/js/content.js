@@ -25,31 +25,34 @@ export class Content {
 
     btnNode.classList.value = 'btn btn-outline-warning py-0';
     btnNode.textContent = 'Edit';
+
     btnNode.setAttribute('data-id', id);
+    btnNode.setAttribute('data-toggle', 'modal');
+    btnNode.setAttribute('data-target', '#exampleModal');
 
     btnNode.addEventListener('click', this._handleEditingOfNote.bind(this));
 
     return btnNode;
   }
 
-  _handleEditingOfNote() {
+  _handleEditingOfNote(e) {
     this.container.classList.add('underEdition');
+
+    let idOfNote = e.currentTarget.getAttribute('data-id');
 
     let titleField = document.querySelector('#title');
     let containField = document.querySelector('#contain');
 
     // Поиск по Id необходимой заметки и копирование в форму ее данных
     this.data.forEach((item) => {
-      if (this.noteId == item.id) {
+      if (idOfNote == item.id) {
         titleField.value = item.title;
         containField.value = item.content;
       }
     });
 
     // Обновление LocalStorage
-    localStorage.setItem('data', JSON.stringify(this.data));
-
-    this.updateList(this.data);
+    // localStorage.setItem('data', JSON.stringify(this.data));
   }
 
   _handleRemovingOfNote(e) {

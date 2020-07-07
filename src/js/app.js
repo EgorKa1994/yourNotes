@@ -2,6 +2,7 @@ import { List } from './list';
 import { Form } from './form';
 
 let data = JSON.parse(localStorage.getItem('data')) || [];
+localStorage.setItem('choosenNoteId', null); // Обнулить ид выбранной заметки
 
 let formNode = document.querySelector('form');
 new Form(formNode);
