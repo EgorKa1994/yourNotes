@@ -1,0 +1,132 @@
+.data-list .active, main h2, .title h1 {
+  text-shadow: -4px -4px 2px #969696;
+}
+
+.bg-hand {
+  background-color: white;
+  background-image: url(bg_main.06fbccaf.jpg);
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.data-list ul li {
+  list-style-type: none;
+  color: white;
+  text-shadow: none;
+  border-bottom: 1px solid #969696;
+}
+
+.appWrap {
+  color: white;
+  background: #b0c1d5;
+  background: linear-gradient(180deg, #b0c1d5 0%, #bcc9d9 18%, #d9e1ec 62%, #e6ebf1 100%);
+  height: 100vh;
+  width: auto;
+}
+
+header {
+  height: 150px;
+  width: auto;
+}
+
+.bg-hand {
+  min-height: 500px;
+  margin-bottom: 100px;
+}
+
+.title {
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 45%;
+}
+.title h1 {
+  font-family: "bangersregular";
+  font-size: 3.5rem;
+}
+
+main {
+  cursor: default;
+  padding-top: 100px;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+}
+main h2 {
+  text-align: center;
+  font-family: "bangersregular";
+  font-size: 2.5rem;
+}
+
+form {
+  color: #b0c1d5;
+}
+form textarea {
+  resize: none;
+}
+
+.data-list {
+  background-color: #d9e1ec;
+  border-radius: 25px;
+  border: 2px solid white;
+  padding-top: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  min-height: 300px;
+  position: relative;
+  bottom: 0;
+  left: 0;
+}
+.data-list ul {
+  padding-left: 0;
+}
+.data-list ul li {
+  padding-top: 5px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  font-family: "bangersregular";
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.data-list ul li h3 {
+  margin-bottom: 0;
+}
+.data-list .active {
+  background-color: #b0c1d5;
+  padding-top: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 10px;
+}
+
+#oneNoteContent {
+  font-family: "bangersregular";
+  font-size: 1.75rem;
+  color: #969696;
+}
+#oneNoteContent p {
+  font-family: "bangersregular";
+  font-size: 1.5rem;
+}
+
+.contentEditor {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  height: auto;
+  width: 50%;
+}
+.contentEditor button {
+  display: inline-block;
+  height: auto;
+  width: 30%;
+  margin-top: 0;
+  margin-right: 2%;
+  margin-bottom: 0;
+  margin-left: 2%;
+}
+
+/*# sourceMappingURL=style.8fd5ab83.css.map */

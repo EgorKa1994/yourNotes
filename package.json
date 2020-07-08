@@ -4,18 +4,31 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel index.html --open",
-    "lint": "eslint ./src/js",
-    "lint:fix": "eslint ./src/js --fix"
+    "dev": "parcel index.html -d public --public-url ./",
+    "build": "parcel build index.html -d public --public-url ./",
+    "lint": "eslint ./server/**/*.js ./src/js/**/*.js",
+    "lint:fix": "eslint ./src/js --fix",
+    "start": "node starter.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.10.2",
+    "bootstrap": "^4.5.0",
+    "cors": "^2.8.4",
+    "express": "^4.16.1",
+    "mongoose": "^4.13.4"
+  },
   "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-transform-runtime": "^7.10.1",
+    "babel-preset-env": "^1.6.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "parcel-bundler": "^1.12.4",
+    "nodemon": "^1.12.1",
     "prettier": "2.0.5",
     "sass": "^1.26.9"
   }
