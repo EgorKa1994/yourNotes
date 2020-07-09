@@ -458,14 +458,23 @@ var _list = require("./list");
 
 var _form = require("./form");
 
-var data = JSON.parse(localStorage.getItem('data')) || [];
+// let data = JSON.parse(localStorage.getItem('data')) || [];
 localStorage.setItem('choosenNoteId', null); // Обнулить ид выбранной заметки
 
 var formNode = document.querySelector('form');
 new _form.Form(formNode);
 var listNode = document.querySelector('#noteList');
 var list = new _list.List(listNode);
-list.render(data); //-------------------------------------------------------
+fetch('http://localhost:8080/api/data', {
+  method: 'GET'
+}).then(function (response) {
+  return response.json();
+}).then(function (data) {
+  return list.render(data.list);
+}).catch(function (error) {
+  return console.error(error);
+}); // list.render(data);
+//-------------------------------------------------------
 // import Note from './note.js';
 // let data = JSON.parse(localStorage.getItem('data')) || [];
 // const yourNote = new Note();
@@ -498,7 +507,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49716" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51526" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

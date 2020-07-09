@@ -1,7 +1,7 @@
 import { List } from './list';
 import { Form } from './form';
 
-let data = JSON.parse(localStorage.getItem('data')) || [];
+// let data = JSON.parse(localStorage.getItem('data')) || [];
 localStorage.setItem('choosenNoteId', null); // Обнулить ид выбранной заметки
 
 let formNode = document.querySelector('form');
@@ -10,7 +10,12 @@ new Form(formNode);
 let listNode = document.querySelector('#noteList');
 let list = new List(listNode);
 
-list.render(data);
+fetch('http://localhost:8080/api/data', { method: 'GET' })
+  .then((response) => response.json())
+  .then((data) => list.render(data.list))
+  .catch((error) => console.error(error));
+
+// list.render(data);
 
 //-------------------------------------------------------
 
