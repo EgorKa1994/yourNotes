@@ -1,5 +1,6 @@
 import { List } from './list';
 import { Content } from './content';
+// import { response } from 'express';
 
 export class Form {
   constructor(form) {
@@ -41,41 +42,60 @@ export class Form {
   _handleSubmit(e) {
     e.preventDefault();
 
-    let data = JSON.parse(localStorage.getItem('data')) || [];
+    // let data = JSON.parse(localStorage.getItem('data')) || [];
 
     // Получение данных о времени
     let timeData = this._getDate();
 
     let noteId = localStorage.getItem('choosenNoteId');
-
+    let elem = {};
     // Проверка: редактирование или добавление заметки
     if (!this.oneNoteContent.classList.contains('underEdition')) {
-      data.push({
-        title: this.inputTitle.value,
-        content: this.inputContain.value,
-        time: timeData,
-        id: this.idCounter,
-      });
+      // data.push({
+      //   // title: this.inputTitle.value,
+      //   // content: this.inputContain.value,
+      //   time: timeData,
+      //   id: this.idCounter,
+      // });
+
+      let formDa = new FormData(this.form);
+      for (let [name, value] of formDa) {
+        elem[name] = value;
+      }
+      elem.time = timeData;
+      elem.id = this.idCounter;
 
       ++this.idCounter;
-
       localStorage.setItem('id', this.idCounter);
-    } else {
-      // Поиск заметки по Id и ее изменение
-      data.forEach((item, index) => {
-        if (noteId == item.id) {
-          data[index].title = this.inputTitle.value;
-          data[index].content = this.inputContain.value;
-          this.content.render(item, null, data);
-        }
-      });
+
+      console.log(elem);
+      console.log(JSON.stringify(elem));
     }
+    // else {
+    //   // Поиск заметки по Id и ее изменение
+    //   data.forEach((item, index) => {
+    //     if (noteId == item.id) {
+    //       data[index].title = this.inputTitle.value;
+    //       data[index].content = this.inputContain.value;
+    //       this.content.render(item, null, data);
+    //     }
+    //   });
+    // }
 
     this.oneNoteContent.classList.remove('underEdition');
 
-    localStorage.setItem('data', JSON.stringify(data));
+    fetch('http://localhost:8080/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json;charset=utf-8' },
+      body: JSON.stringify(elem),
+    })
+      .then((response) => response.json())
+      .then((data) => this.list.render(data.list))
+      .catch((error) => console.error(error));
 
-    this.list.render(data);
+    // localStorage.setItem('data', JSON.stringify(data));
+
+    // this.list.render(data);
 
     let choosenNote = document.getElementById(noteId);
     if (choosenNote) choosenNote.classList.add('active');

@@ -12,7 +12,10 @@ let list = new List(listNode);
 
 fetch('http://localhost:8080/api/data', { method: 'GET' })
   .then((response) => response.json())
-  .then((data) => list.render(data.list))
+  .then((data) => {
+    list.render(data.list);
+    console.log(data);
+  })
   .catch((error) => console.error(error));
 
 // list.render(data);

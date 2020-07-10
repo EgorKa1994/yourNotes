@@ -23,7 +23,7 @@ export class List {
 
   _handleChoosenNote(e) {
     // если это не добавить, не сохраняются данные this.data
-    this.data = JSON.parse(localStorage.getItem('data'));
+    // this.data = JSON.parse(localStorage.getItem('data'));
     // Удаление разметки
     let arrOfNotes = this.container.querySelectorAll('li');
     arrOfNotes.forEach((item) => {
@@ -38,7 +38,6 @@ export class List {
     }
     let choosenLi = document.getElementById(this.noteId);
     choosenLi.classList.add('active');
-
     // Добавление описания заметки
     this.data.forEach((item) => {
       if (this.noteId == item.id) {
