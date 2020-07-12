@@ -24,6 +24,7 @@ export class List {
   _handleChoosenNote(e) {
     // если это не добавить, не сохраняются данные this.data
     // this.data = JSON.parse(localStorage.getItem('data'));
+
     // Удаление разметки
     let arrOfNotes = this.container.querySelectorAll('li');
     arrOfNotes.forEach((item) => {
@@ -36,15 +37,22 @@ export class List {
     } else {
       this.noteId = e.target.getAttribute('id');
     }
+
     let choosenLi = document.getElementById(this.noteId);
     choosenLi.classList.add('active');
+    localStorage.setItem('choosenNoteId', this.noteId);
     // Добавление описания заметки
-    this.data.forEach((item) => {
-      if (this.noteId == item.id) {
-        localStorage.setItem('choosenNoteId', this.noteId);
-        this.content.render(item, this.render.bind(this), this.data);
-      }
-    });
+
+    fetch('http://localhost:8080/api/data', { method: 'GET' })
+      .then((response) => response.json())
+      .then((data) => {
+        data.list.forEach((item) => {
+          if (this.noteId == item.id) {
+            this.content.render(item, this.render.bind(this));
+          }
+        });
+      })
+      .catch((error) => console.error(error));
   }
 
   render(data) {
@@ -59,5 +67,26 @@ export class List {
 
       this.container.innerHTML = this.container.innerHTML + template;
     });
+
+    let activeItemId = Number(localStorage.getItem('choosenNoteId'));
+    if (activeItemId) {
+      let choosenLi = document.getElementById(this.noteId);
+      choosenLi.classList.add('active');
+      // this.data.forEach((item) => {
+      //   if (activeItemId == item.id) {
+      //     this.content.render(item, this.render.bind(this));
+      //   }
+      // });
+      fetch('http://localhost:8080/api/data', { method: 'GET' })
+        .then((response) => response.json())
+        .then((data) => {
+          data.list.forEach((item) => {
+            if (this.noteId == item.id) {
+              this.content.render(item, this.render.bind(this));
+            }
+          });
+        })
+        .catch((error) => console.error(error));
+    }
   }
 }

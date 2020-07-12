@@ -1,3 +1,5 @@
+// import { response } from 'express';
+
 export class Content {
   constructor(container) {
     this.container = container;
@@ -5,7 +7,7 @@ export class Content {
     this.noteInfo = {};
     this.noteId = null;
     this.updateList = null;
-    this.data = [];
+    // this.data = [];
   }
 
   _createTrashButton(id) {
@@ -28,7 +30,7 @@ export class Content {
 
     btnNode.setAttribute('data-id', id);
     btnNode.setAttribute('data-toggle', 'modal');
-    btnNode.setAttribute('data-target', '#exampleModal');
+    btnNode.setAttribute('data-target', '#formModal');
 
     btnNode.addEventListener('click', this._handleEditingOfNote.bind(this));
 
@@ -44,43 +46,68 @@ export class Content {
     let containField = document.querySelector('#contain');
 
     // Поиск по Id необходимой заметки и копирование в форму ее данных
-    this.data.forEach((item) => {
-      if (idOfNote == item.id) {
-        titleField.value = item.title;
-        containField.value = item.content;
-      }
-    });
+
+    fetch('http://localhost:8080/api/data', { method: 'GET' })
+      .then((response) => response.json())
+      .then((data) => {
+        data.list.forEach((item) => {
+          if (item.id == idOfNote) {
+            titleField.value = item.title;
+            containField.value = item.contain;
+
+            $('#formModal').modal('show');
+          }
+        });
+      })
+      .catch((error) => console.error(error));
+
+    // this.data.forEach((item) => {
+    //   if (idOfNote == item.id) {
+    //     titleField.value = item.title;
+    //     containField.value = item.contain;
+    //   }
+    // });
 
     // Обновление LocalStorage
     // localStorage.setItem('data', JSON.stringify(this.data));
   }
 
   _handleRemovingOfNote(e) {
-    this.container.innerHTML = '';
+    // this.container.innerHTML = '';
     let idOfNote = e.currentTarget.getAttribute('data-id');
+    localStorage.setItem('choosenNoteId', null);
     // Поиск по Id заметки и удаление ее из данных
-    this.data.forEach((item, index) => {
-      if (idOfNote == item.id) {
-        this.data.splice(index, 1);
-      }
-    });
+    // this.data.forEach((item, index) => {
+    //   if (idOfNote == item.id) {
+    //     this.data.splice(index, 1);
+    //   }
+    // });
+
+    fetch(`http://localhost:8080/api/data/${idOfNote}`, { method: 'DELETE' })
+      .then((response) => response.json())
+      .then((data) => {
+        this.container.innerHTML = '';
+        if (this.updateList) {
+          this.updateList(data.list);
+        }
+      });
 
     // Обновление LocalStorage
-    localStorage.setItem('data', JSON.stringify(this.data));
+    // localStorage.setItem('data', JSON.stringify(this.data));
 
-    this.updateList(this.data);
+    // this.updateList(this.data);
   }
 
-  render(noteInfo, updateList, data) {
+  render(noteInfo, updateList) {
     this.noteInfo = noteInfo;
     this.updateList = updateList;
-    this.data = data;
+    // this.data = data;
     this.noteId = noteInfo.id;
 
     this.container.innerHTML = '';
     let template = `
     <div>${noteInfo.time}</div>
-    <p>${noteInfo.content}</p>
+    <p>${noteInfo.contain}</p>
   `;
     this.container.innerHTML = this.container.innerHTML + template;
 

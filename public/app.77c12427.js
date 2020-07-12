@@ -131,6 +131,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+// import { response } from 'express';
 var Content = /*#__PURE__*/function () {
   function Content(container) {
     _classCallCheck(this, Content);
@@ -138,8 +139,7 @@ var Content = /*#__PURE__*/function () {
     this.container = container;
     this.noteInfo = {};
     this.noteId = null;
-    this.updateList = null;
-    this.data = [];
+    this.updateList = null; // this.data = [];
   }
 
   _createClass(Content, [{
@@ -160,7 +160,7 @@ var Content = /*#__PURE__*/function () {
       btnNode.textContent = 'Edit';
       btnNode.setAttribute('data-id', id);
       btnNode.setAttribute('data-toggle', 'modal');
-      btnNode.setAttribute('data-target', '#exampleModal');
+      btnNode.setAttribute('data-target', '#formModal');
       btnNode.addEventListener('click', this._handleEditingOfNote.bind(this));
       return btnNode;
     }
@@ -172,12 +172,27 @@ var Content = /*#__PURE__*/function () {
       var titleField = document.querySelector('#title');
       var containField = document.querySelector('#contain'); // Поиск по Id необходимой заметки и копирование в форму ее данных
 
-      this.data.forEach(function (item) {
-        if (idOfNote == item.id) {
-          titleField.value = item.title;
-          containField.value = item.content;
-        }
-      }); // Обновление LocalStorage
+      fetch('http://localhost:8080/api/data', {
+        method: 'GET'
+      }).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        data.list.forEach(function (item) {
+          if (item.id == idOfNote) {
+            titleField.value = item.title;
+            containField.value = item.contain;
+            $('#formModal').modal('show');
+          }
+        });
+      }).catch(function (error) {
+        return console.error(error);
+      }); // this.data.forEach((item) => {
+      //   if (idOfNote == item.id) {
+      //     titleField.value = item.title;
+      //     containField.value = item.contain;
+      //   }
+      // });
+      // Обновление LocalStorage
       // localStorage.setItem('data', JSON.stringify(this.data));
     }
   }, {
@@ -185,27 +200,38 @@ var Content = /*#__PURE__*/function () {
     value: function _handleRemovingOfNote(e) {
       var _this = this;
 
-      this.container.innerHTML = '';
-      var idOfNote = e.currentTarget.getAttribute('data-id'); // Поиск по Id заметки и удаление ее из данных
+      // this.container.innerHTML = '';
+      var idOfNote = e.currentTarget.getAttribute('data-id');
+      localStorage.setItem('choosenNoteId', null); // Поиск по Id заметки и удаление ее из данных
+      // this.data.forEach((item, index) => {
+      //   if (idOfNote == item.id) {
+      //     this.data.splice(index, 1);
+      //   }
+      // });
 
-      this.data.forEach(function (item, index) {
-        if (idOfNote == item.id) {
-          _this.data.splice(index, 1);
+      fetch("http://localhost:8080/api/data/".concat(idOfNote), {
+        method: 'DELETE'
+      }).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        _this.container.innerHTML = '';
+
+        if (_this.updateList) {
+          _this.updateList(data.list);
         }
       }); // Обновление LocalStorage
-
-      localStorage.setItem('data', JSON.stringify(this.data));
-      this.updateList(this.data);
+      // localStorage.setItem('data', JSON.stringify(this.data));
+      // this.updateList(this.data);
     }
   }, {
     key: "render",
-    value: function render(noteInfo, updateList, data) {
+    value: function render(noteInfo, updateList) {
       this.noteInfo = noteInfo;
-      this.updateList = updateList;
-      this.data = data;
+      this.updateList = updateList; // this.data = data;
+
       this.noteId = noteInfo.id;
       this.container.innerHTML = '';
-      var template = "\n    <div>".concat(noteInfo.time, "</div>\n    <p>").concat(noteInfo.content, "</p>\n  ");
+      var template = "\n    <div>".concat(noteInfo.time, "</div>\n    <p>").concat(noteInfo.contain, "</p>\n  ");
       this.container.innerHTML = this.container.innerHTML + template;
       var noteEditor = document.createElement('div');
       noteEditor.classList.value = 'contentEditor d-flex justify-content-center';
@@ -274,14 +300,21 @@ var List = /*#__PURE__*/function () {
       }
 
       var choosenLi = document.getElementById(this.noteId);
-      choosenLi.classList.add('active'); // Добавление описания заметки
+      choosenLi.classList.add('active');
+      localStorage.setItem('choosenNoteId', this.noteId); // Добавление описания заметки
 
-      this.data.forEach(function (item) {
-        if (_this.noteId == item.id) {
-          localStorage.setItem('choosenNoteId', _this.noteId);
-
-          _this.content.render(item, _this.render.bind(_this), _this.data);
-        }
+      fetch('http://localhost:8080/api/data', {
+        method: 'GET'
+      }).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        data.list.forEach(function (item) {
+          if (_this.noteId == item.id) {
+            _this.content.render(item, _this.render.bind(_this));
+          }
+        });
+      }).catch(function (error) {
+        return console.error(error);
       });
     }
   }, {
@@ -295,6 +328,30 @@ var List = /*#__PURE__*/function () {
         var template = "<li id=".concat(item.id, ">\n      <h3>").concat(item.title, "</h3>\n      <div>").concat(item.time, "</div>\n      </li>");
         _this2.container.innerHTML = _this2.container.innerHTML + template;
       });
+      var activeItemId = Number(localStorage.getItem('choosenNoteId'));
+
+      if (activeItemId) {
+        var choosenLi = document.getElementById(this.noteId);
+        choosenLi.classList.add('active'); // this.data.forEach((item) => {
+        //   if (activeItemId == item.id) {
+        //     this.content.render(item, this.render.bind(this));
+        //   }
+        // });
+
+        fetch('http://localhost:8080/api/data', {
+          method: 'GET'
+        }).then(function (response) {
+          return response.json();
+        }).then(function (data) {
+          data.list.forEach(function (item) {
+            if (_this2.noteId == item.id) {
+              _this2.content.render(item, _this2.render.bind(_this2));
+            }
+          });
+        }).catch(function (error) {
+          return console.error(error);
+        });
+      }
     }
   }]);
 
@@ -343,6 +400,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 // import { response } from 'express';
+// import { response } from 'express';
 var Form = /*#__PURE__*/function () {
   function Form(form) {
     _classCallCheck(this, Form);
@@ -386,8 +444,7 @@ var Form = /*#__PURE__*/function () {
 
       var timeData = this._getDate();
 
-      var noteId = localStorage.getItem('choosenNoteId');
-      var elem = {}; // Проверка: редактирование или добавление заметки
+      var noteId = localStorage.getItem('choosenNoteId'); // Проверка: редактирование или добавление заметки
 
       if (!this.oneNoteContent.classList.contains('underEdition')) {
         // data.push({
@@ -396,6 +453,7 @@ var Form = /*#__PURE__*/function () {
         //   time: timeData,
         //   id: this.idCounter,
         // });
+        var elem = {};
         var formDa = new FormData(this.form);
 
         var _iterator = _createForOfIteratorHelper(formDa),
@@ -419,42 +477,75 @@ var Form = /*#__PURE__*/function () {
         elem.id = this.idCounter;
         ++this.idCounter;
         localStorage.setItem('id', this.idCounter);
-        console.log(elem);
-        console.log(JSON.stringify(elem));
-      } // else {
-      //   // Поиск заметки по Id и ее изменение
-      //   data.forEach((item, index) => {
-      //     if (noteId == item.id) {
-      //       data[index].title = this.inputTitle.value;
-      //       data[index].content = this.inputContain.value;
-      //       this.content.render(item, null, data);
-      //     }
-      //   });
-      // }
+        fetch('http://localhost:8080/api/data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          body: JSON.stringify(elem)
+        }).then(function (response) {
+          return response.json();
+        }).then(function (data) {
+          return _this.list.render(data.list);
+        }).catch(function (error) {
+          return console.error(error);
+        });
+      } else {
+        // Поиск заметки по Id и ее изменение
+        // data.forEach((item, index) => {
+        //   if (noteId == item.id) {
+        //     data[index].title = this.inputTitle.value;
+        //     data[index].content = this.inputContain.value;
+        //     this.content.render(item, null, data);
+        //   }
+        // });
+        var _elem = {};
 
+        var _formDa = new FormData(this.form);
 
-      this.oneNoteContent.classList.remove('underEdition');
-      fetch('http://localhost:8080/api/data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify(elem)
-      }).then(function (response) {
-        return response.json();
-      }).then(function (data) {
-        return _this.list.render(data.list);
-      }).catch(function (error) {
-        return console.error(error);
-      }); // localStorage.setItem('data', JSON.stringify(data));
+        var _iterator2 = _createForOfIteratorHelper(_formDa),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _step2$value = _slicedToArray(_step2.value, 2),
+                _name = _step2$value[0],
+                _value = _step2$value[1];
+
+            _elem[_name] = _value;
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+
+        _elem.time = timeData;
+        _elem.id = noteId;
+        console.log(_elem);
+        fetch("http://localhost:8080/api/data/".concat(noteId), {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          body: JSON.stringify(_elem)
+        }).then(function (response) {
+          return response.json();
+        }).then(function (data) {
+          _this.list.render(data.list);
+        }).catch(function (error) {
+          return console.error(error);
+        });
+      }
+
+      this.oneNoteContent.classList.remove('underEdition'); // localStorage.setItem('data', JSON.stringify(data));
       // this.list.render(data);
-
-      var choosenNote = document.getElementById(noteId);
-      if (choosenNote) choosenNote.classList.add('active');
 
       this._resetForm(this.form);
 
-      $('#exampleModal').modal('hide');
+      $('#formModal').modal('hide'); // let choosenNote = document.getElementById(noteId);
+      // console.log(choosenNote);
+      // if (choosenNote) choosenNote.classList.add('active');
     }
   }, {
     key: "_resetForm",
@@ -511,6 +602,10 @@ localStorage.setItem('choosenNoteId', null); // Обнулить ид выбра
 
 var formNode = document.querySelector('form');
 new _form.Form(formNode);
+var addBtn = document.querySelector('#addNote');
+addBtn.addEventListener('click', function () {
+  $('#formModal').modal('show');
+});
 var listNode = document.querySelector('#noteList');
 var list = new _list.List(listNode);
 fetch('http://localhost:8080/api/data', {
@@ -519,7 +614,6 @@ fetch('http://localhost:8080/api/data', {
   return response.json();
 }).then(function (data) {
   list.render(data.list);
-  console.log(data);
 }).catch(function (error) {
   return console.error(error);
 }); // list.render(data);
@@ -556,7 +650,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55393" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63081" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

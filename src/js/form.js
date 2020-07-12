@@ -1,6 +1,7 @@
 import { List } from './list';
 import { Content } from './content';
 // import { response } from 'express';
+// import { response } from 'express';
 
 export class Form {
   constructor(form) {
@@ -48,7 +49,7 @@ export class Form {
     let timeData = this._getDate();
 
     let noteId = localStorage.getItem('choosenNoteId');
-    let elem = {};
+
     // Проверка: редактирование или добавление заметки
     if (!this.oneNoteContent.classList.contains('underEdition')) {
       // data.push({
@@ -57,7 +58,7 @@ export class Form {
       //   time: timeData,
       //   id: this.idCounter,
       // });
-
+      let elem = {};
       let formDa = new FormData(this.form);
       for (let [name, value] of formDa) {
         elem[name] = value;
@@ -68,41 +69,57 @@ export class Form {
       ++this.idCounter;
       localStorage.setItem('id', this.idCounter);
 
+      fetch('http://localhost:8080/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json;charset=utf-8' },
+        body: JSON.stringify(elem),
+      })
+        .then((response) => response.json())
+        .then((data) => this.list.render(data.list))
+        .catch((error) => console.error(error));
+    } else {
+      // Поиск заметки по Id и ее изменение
+      // data.forEach((item, index) => {
+      //   if (noteId == item.id) {
+      //     data[index].title = this.inputTitle.value;
+      //     data[index].content = this.inputContain.value;
+      //     this.content.render(item, null, data);
+      //   }
+      // });
+      let elem = {};
+      let formDa = new FormData(this.form);
+      for (let [name, value] of formDa) {
+        elem[name] = value;
+      }
+      elem.time = timeData;
+      elem.id = noteId;
       console.log(elem);
-      console.log(JSON.stringify(elem));
+
+      fetch(`http://localhost:8080/api/data/${noteId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json;charset=utf-8' },
+        body: JSON.stringify(elem),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.list.render(data.list);
+        })
+        .catch((error) => console.error(error));
     }
-    // else {
-    //   // Поиск заметки по Id и ее изменение
-    //   data.forEach((item, index) => {
-    //     if (noteId == item.id) {
-    //       data[index].title = this.inputTitle.value;
-    //       data[index].content = this.inputContain.value;
-    //       this.content.render(item, null, data);
-    //     }
-    //   });
-    // }
 
     this.oneNoteContent.classList.remove('underEdition');
-
-    fetch('http://localhost:8080/api/data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json;charset=utf-8' },
-      body: JSON.stringify(elem),
-    })
-      .then((response) => response.json())
-      .then((data) => this.list.render(data.list))
-      .catch((error) => console.error(error));
 
     // localStorage.setItem('data', JSON.stringify(data));
 
     // this.list.render(data);
 
-    let choosenNote = document.getElementById(noteId);
-    if (choosenNote) choosenNote.classList.add('active');
-
     this._resetForm(this.form);
 
-    $('#exampleModal').modal('hide');
+    $('#formModal').modal('hide');
+
+    // let choosenNote = document.getElementById(noteId);
+    // console.log(choosenNote);
+    // if (choosenNote) choosenNote.classList.add('active');
   }
 
   _resetForm(form) {
