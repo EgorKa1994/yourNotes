@@ -3,16 +3,16 @@ import { Form } from './form';
 
 localStorage.setItem('choosenNoteId', null); // Обнулить ид выбранной заметки в списке
 
-let formNode = document.querySelector('form');
+const formNode = document.querySelector('form');
 new Form(formNode);
 
-let addBtn = document.querySelector('#addNote');
+const addBtn = document.querySelector('#addNote');
 addBtn.addEventListener('click', () => {
   $('#formModal').modal('show');
 });
 
-let listNode = document.querySelector('#noteList');
-let list = new List(listNode);
+const listNode = document.querySelector('#noteList');
+const list = new List(listNode);
 
 fetch('http://localhost:8080/api/data', { method: 'GET' })
   .then((response) => response.json())

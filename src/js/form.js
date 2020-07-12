@@ -25,7 +25,7 @@ export class Form {
 
     this.closeButton.addEventListener(
       'click',
-      this._handleCloseModal.bind(this)
+      this._handleCloseModal.bind(this),
     );
   }
 
@@ -36,22 +36,22 @@ export class Form {
 
   _handleSubmit(e) {
     e.preventDefault();
-    let url = `http://localhost:8080/api/data`;
+    let url = 'http://localhost:8080/api/data';
 
     // Получение данных о времени
-    let timeData = this._getDate();
+    const timeData = this._getDate();
 
     // Проверка: редактирование или добавление заметки
     if (!this.oneNoteContent.classList.contains('underEdition')) {
-      let newNoteData = this._сreateNoteData(timeData, this.idCounter); // Создание объекта
+      const newNoteData = this._сreateNoteData(timeData, this.idCounter); // Создание объекта
       this._editListOfNotes(url, 'POST', newNoteData);
 
       localStorage.setItem('id', ++this.idCounter); // Обновляем счетчик id
     } else {
-      let noteId = localStorage.getItem('choosenNoteId');
-      url = url + `/${noteId}`;
+      const noteId = localStorage.getItem('choosenNoteId');
+      url += `/${noteId}`;
 
-      let newNoteData = this._сreateNoteData(timeData, noteId); // Создание объекта
+      const newNoteData = this._сreateNoteData(timeData, noteId); // Создание объекта
       this._editListOfNotes(url, 'PUT', newNoteData);
 
       this.oneNoteContent.classList.remove('underEdition');
@@ -70,23 +70,22 @@ export class Form {
   }
 
   _parseNumber(num) {
-    let parsedNum = num;
+    const parsedNum = num;
 
     if (parsedNum < 10) {
-      return '0' + parsedNum;
-    } else {
-      return parsedNum;
+      return `0${parsedNum}`;
     }
+    return parsedNum;
   }
 
   _getDate() {
-    let now = new Date();
-    let month = this._parseNumber(now.getMonth() + 1);
-    let year = now.getFullYear();
-    let day = this._parseNumber(now.getDate());
+    const now = new Date();
+    const month = this._parseNumber(now.getMonth() + 1);
+    const year = now.getFullYear();
+    const day = this._parseNumber(now.getDate());
 
-    let hours = this._parseNumber(now.getHours());
-    let minutes = this._parseNumber(now.getMinutes());
+    const hours = this._parseNumber(now.getHours());
+    const minutes = this._parseNumber(now.getMinutes());
 
     return `${day}.${month}.${year} ${hours}:${minutes}`;
   }
@@ -105,9 +104,9 @@ export class Form {
 
   // Создание заметки
   _сreateNoteData(time, noteId) {
-    let newNote = {};
-    let formDa = new FormData(this.form);
-    for (let [name, value] of formDa) {
+    const newNote = {};
+    const formDa = new FormData(this.form);
+    for (const [name, value] of formDa) {
       newNote[name] = value;
     }
     newNote.time = time;

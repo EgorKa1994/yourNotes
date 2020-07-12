@@ -16,7 +16,7 @@ export class List {
     // Выбор определенной заметки
     this.container.addEventListener(
       'click',
-      this._handleChoosenNote.bind(this)
+      this._handleChoosenNote.bind(this),
     );
   }
 
@@ -24,7 +24,7 @@ export class List {
     // Удаление разметки
     this._markUpRemoving(this.container.querySelectorAll('li'));
 
-    let target = e.target;
+    const { target } = e;
     this.noteId = this._getIdOfNote(target);
     // Добавление разметки
     this._markUpAddition(this.noteId);
@@ -44,7 +44,7 @@ export class List {
       .catch((error) => console.error(error));
   }
 
-  //----------------Вспомогательные функции-----------------------
+  // ----------------Вспомогательные функции-----------------------
 
   // Удаление разметки
   _markUpRemoving(noteList) {
@@ -55,7 +55,7 @@ export class List {
 
   // Добавление разметки
   _markUpAddition(noteId) {
-    let choosenLi = document.getElementById(noteId);
+    const choosenLi = document.getElementById(noteId);
     choosenLi.classList.add('active');
   }
 
@@ -77,7 +77,7 @@ export class List {
     this.container.innerHTML = '';
 
     data.forEach((item) => {
-      let template = `<li id=${item.id}>
+      const template = `<li id=${item.id}>
       <h3>${item.title}</h3>
       <div>${item.time}</div>
       </li>`;
@@ -85,7 +85,7 @@ export class List {
       this.container.innerHTML = this.container.innerHTML + template;
     });
 
-    let activeItemId = Number(localStorage.getItem('choosenNoteId'));
+    const activeItemId = Number(localStorage.getItem('choosenNoteId'));
     if (activeItemId) {
       this._markUpAddition(activeItemId);
 

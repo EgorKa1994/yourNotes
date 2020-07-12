@@ -194,7 +194,8 @@ var Content = /*#__PURE__*/function () {
       var _this = this;
 
       var idOfNote = e.currentTarget.getAttribute('data-id');
-      localStorage.setItem('choosenNoteId', null);
+      localStorage.setItem('choosenNoteId', null); // Обнуляем id после удаления заметки
+
       fetch("http://localhost:8080/api/data/".concat(idOfNote), {
         method: 'DELETE'
       }).then(function (response) {
@@ -292,7 +293,7 @@ var List = /*#__PURE__*/function () {
       }).catch(function (error) {
         return console.error(error);
       });
-    } //----------------Вспомогательные функции-----------------------
+    } // ----------------Вспомогательные функции-----------------------
     // Удаление разметки
 
   }, {
@@ -437,7 +438,7 @@ var Form = /*#__PURE__*/function () {
     key: "_handleSubmit",
     value: function _handleSubmit(e) {
       e.preventDefault();
-      var url = "http://localhost:8080/api/data"; // Получение данных о времени
+      var url = 'http://localhost:8080/api/data'; // Получение данных о времени
 
       var timeData = this._getDate(); // Проверка: редактирование или добавление заметки
 
@@ -451,7 +452,7 @@ var Form = /*#__PURE__*/function () {
         localStorage.setItem('id', ++this.idCounter); // Обновляем счетчик id
       } else {
         var noteId = localStorage.getItem('choosenNoteId');
-        url = url + "/".concat(noteId);
+        url += "/".concat(noteId);
 
         var _newNoteData = this._сreateNoteData(timeData, noteId); // Создание объекта
 
@@ -480,10 +481,10 @@ var Form = /*#__PURE__*/function () {
       var parsedNum = num;
 
       if (parsedNum < 10) {
-        return '0' + parsedNum;
-      } else {
-        return parsedNum;
+        return "0".concat(parsedNum);
       }
+
+      return parsedNum;
     }
   }, {
     key: "_getDate",

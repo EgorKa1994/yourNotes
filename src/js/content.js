@@ -39,13 +39,12 @@ export class Content {
   _handleEditingOfNote(e) {
     this.container.classList.add('underEdition');
 
-    let idOfNote = e.currentTarget.getAttribute('data-id');
+    const idOfNote = e.currentTarget.getAttribute('data-id');
 
-    let titleField = document.querySelector('#title');
-    let containField = document.querySelector('#contain');
+    const titleField = document.querySelector('#title');
+    const containField = document.querySelector('#contain');
 
     // Поиск по Id необходимой заметки и копирование в форму ее данных
-
     fetch('http://localhost:8080/api/data', { method: 'GET' })
       .then((response) => response.json())
       .then((data) => {
@@ -53,7 +52,6 @@ export class Content {
           if (item.id == idOfNote) {
             titleField.value = item.title;
             containField.value = item.contain;
-
             $('#formModal').modal('show');
           }
         });
@@ -62,8 +60,8 @@ export class Content {
   }
 
   _handleRemovingOfNote(e) {
-    let idOfNote = e.currentTarget.getAttribute('data-id');
-    localStorage.setItem('choosenNoteId', null);
+    const idOfNote = e.currentTarget.getAttribute('data-id');
+    localStorage.setItem('choosenNoteId', null); // Обнуляем id после удаления заметки
 
     fetch(`http://localhost:8080/api/data/${idOfNote}`, { method: 'DELETE' })
       .then((response) => response.json())
@@ -81,13 +79,13 @@ export class Content {
     this.noteId = noteInfo.id;
 
     this.container.innerHTML = '';
-    let template = `
+    const template = `
     <div>${noteInfo.time}</div>
     <p>${noteInfo.contain}</p>
   `;
     this.container.innerHTML = this.container.innerHTML + template;
 
-    let noteEditor = document.createElement('div');
+    const noteEditor = document.createElement('div');
     noteEditor.classList.value = 'contentEditor d-flex justify-content-center';
     noteEditor.append(this._createTrashButton(this.noteId));
     noteEditor.append(this._createEditButton(this.noteId));
