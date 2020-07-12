@@ -7,7 +7,6 @@ export class List {
     this.content = new Content(this.oneNoteContent);
 
     this.noteId = null;
-
     this.data = [];
 
     this._init();
@@ -22,27 +21,17 @@ export class List {
   }
 
   _handleChoosenNote(e) {
-    // если это не добавить, не сохраняются данные this.data
-    // this.data = JSON.parse(localStorage.getItem('data'));
-
     // Удаление разметки
-    let arrOfNotes = this.container.querySelectorAll('li');
-    arrOfNotes.forEach((item) => {
-      item.classList.remove('active');
-    });
+    this._markUpRemoving(this.container.querySelectorAll('li'));
 
+    let target = e.target;
+    this.noteId = this._getIdOfNote(target);
     // Добавление разметки
-    if (!e.target.hasAttribute('id')) {
-      this.noteId = e.target.parentNode.getAttribute('id');
-    } else {
-      this.noteId = e.target.getAttribute('id');
-    }
+    this._markUpAddition(this.noteId);
 
-    let choosenLi = document.getElementById(this.noteId);
-    choosenLi.classList.add('active');
-    localStorage.setItem('choosenNoteId', this.noteId);
+    localStorage.setItem('choosenNoteId', this.noteId); // Запоминаем id выбранной заметки
+
     // Добавление описания заметки
-
     fetch('http://localhost:8080/api/data', { method: 'GET' })
       .then((response) => response.json())
       .then((data) => {
@@ -54,6 +43,34 @@ export class List {
       })
       .catch((error) => console.error(error));
   }
+
+  //----------------Вспомогательные функции-----------------------
+
+  // Удаление разметки
+  _markUpRemoving(noteList) {
+    noteList.forEach((item) => {
+      item.classList.remove('active');
+    });
+  }
+
+  // Добавление разметки
+  _markUpAddition(noteId) {
+    let choosenLi = document.getElementById(noteId);
+    choosenLi.classList.add('active');
+  }
+
+  // Получение id заметки
+  _getIdOfNote(target) {
+    let idOfnote;
+    if (!target.hasAttribute('id')) {
+      idOfnote = target.parentNode.getAttribute('id');
+    } else {
+      idOfnote = target.getAttribute('id');
+    }
+    return idOfnote;
+  }
+
+  //--------------------------------------------------------
 
   render(data) {
     this.data = data;
@@ -70,18 +87,13 @@ export class List {
 
     let activeItemId = Number(localStorage.getItem('choosenNoteId'));
     if (activeItemId) {
-      let choosenLi = document.getElementById(this.noteId);
-      choosenLi.classList.add('active');
-      // this.data.forEach((item) => {
-      //   if (activeItemId == item.id) {
-      //     this.content.render(item, this.render.bind(this));
-      //   }
-      // });
+      this._markUpAddition(activeItemId);
+
       fetch('http://localhost:8080/api/data', { method: 'GET' })
         .then((response) => response.json())
         .then((data) => {
           data.list.forEach((item) => {
-            if (this.noteId == item.id) {
+            if (activeItemId == item.id) {
               this.content.render(item, this.render.bind(this));
             }
           });

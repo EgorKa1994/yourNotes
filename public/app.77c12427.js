@@ -268,23 +268,16 @@ var List = /*#__PURE__*/function () {
     value: function _handleChoosenNote(e) {
       var _this = this;
 
-      // если это не добавить, не сохраняются данные this.data
-      // this.data = JSON.parse(localStorage.getItem('data'));
       // Удаление разметки
-      var arrOfNotes = this.container.querySelectorAll('li');
-      arrOfNotes.forEach(function (item) {
-        item.classList.remove('active');
-      }); // Добавление разметки
+      this._markUpRemoving(this.container.querySelectorAll('li'));
 
-      if (!e.target.hasAttribute('id')) {
-        this.noteId = e.target.parentNode.getAttribute('id');
-      } else {
-        this.noteId = e.target.getAttribute('id');
-      }
+      var target = e.target;
+      this.noteId = this._getIdOfNote(target); // Добавление разметки
 
-      var choosenLi = document.getElementById(this.noteId);
-      choosenLi.classList.add('active');
-      localStorage.setItem('choosenNoteId', this.noteId); // Добавление описания заметки
+      this._markUpAddition(this.noteId);
+
+      localStorage.setItem('choosenNoteId', this.noteId); // Запоминаем id выбранной заметки
+      // Добавление описания заметки
 
       fetch('http://localhost:8080/api/data', {
         method: 'GET'
@@ -299,7 +292,38 @@ var List = /*#__PURE__*/function () {
       }).catch(function (error) {
         return console.error(error);
       });
-    }
+    } //----------------Вспомогательные функции-----------------------
+    // Удаление разметки
+
+  }, {
+    key: "_markUpRemoving",
+    value: function _markUpRemoving(noteList) {
+      noteList.forEach(function (item) {
+        item.classList.remove('active');
+      });
+    } // Добавление разметки
+
+  }, {
+    key: "_markUpAddition",
+    value: function _markUpAddition(noteId) {
+      var choosenLi = document.getElementById(noteId);
+      choosenLi.classList.add('active');
+    } // Получение id заметки
+
+  }, {
+    key: "_getIdOfNote",
+    value: function _getIdOfNote(target) {
+      var idOfnote;
+
+      if (!target.hasAttribute('id')) {
+        idOfnote = target.parentNode.getAttribute('id');
+      } else {
+        idOfnote = target.getAttribute('id');
+      }
+
+      return idOfnote;
+    } //--------------------------------------------------------
+
   }, {
     key: "render",
     value: function render(data) {
@@ -314,12 +338,7 @@ var List = /*#__PURE__*/function () {
       var activeItemId = Number(localStorage.getItem('choosenNoteId'));
 
       if (activeItemId) {
-        var choosenLi = document.getElementById(this.noteId);
-        choosenLi.classList.add('active'); // this.data.forEach((item) => {
-        //   if (activeItemId == item.id) {
-        //     this.content.render(item, this.render.bind(this));
-        //   }
-        // });
+        this._markUpAddition(activeItemId);
 
         fetch('http://localhost:8080/api/data', {
           method: 'GET'
@@ -327,7 +346,7 @@ var List = /*#__PURE__*/function () {
           return response.json();
         }).then(function (data) {
           data.list.forEach(function (item) {
-            if (_this2.noteId == item.id) {
+            if (activeItemId == item.id) {
               _this2.content.render(item, _this2.render.bind(_this2));
             }
           });
@@ -449,7 +468,7 @@ var Form = /*#__PURE__*/function () {
   }, {
     key: "_resetForm",
     value: function _resetForm(form) {
-      form.reset(); // Найдём все скрытые поля в форме и сбросим их значение
+      form.reset();
 
       _toConsumableArray(form.querySelectorAll('[type="hidden"]')).forEach(function (input) {
         input.value = '';

@@ -44,7 +44,6 @@ export class Form {
     // Проверка: редактирование или добавление заметки
     if (!this.oneNoteContent.classList.contains('underEdition')) {
       let newNoteData = this._сreateNoteData(timeData, this.idCounter); // Создание объекта
-
       this._editListOfNotes(url, 'POST', newNoteData);
 
       localStorage.setItem('id', ++this.idCounter); // Обновляем счетчик id
@@ -53,21 +52,18 @@ export class Form {
       url = url + `/${noteId}`;
 
       let newNoteData = this._сreateNoteData(timeData, noteId); // Создание объекта
-
       this._editListOfNotes(url, 'PUT', newNoteData);
 
       this.oneNoteContent.classList.remove('underEdition');
     }
 
     this._resetForm(this.form);
-
     $('#formModal').modal('hide');
   }
 
   _resetForm(form) {
     form.reset();
 
-    // Найдём все скрытые поля в форме и сбросим их значение
     [...form.querySelectorAll('[type="hidden"]')].forEach((input) => {
       input.value = '';
     });
