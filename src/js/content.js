@@ -7,7 +7,6 @@ export class Content {
     this.noteInfo = {};
     this.noteId = null;
     this.updateList = null;
-    // this.data = [];
   }
 
   _createTrashButton(id) {
@@ -60,28 +59,11 @@ export class Content {
         });
       })
       .catch((error) => console.error(error));
-
-    // this.data.forEach((item) => {
-    //   if (idOfNote == item.id) {
-    //     titleField.value = item.title;
-    //     containField.value = item.contain;
-    //   }
-    // });
-
-    // Обновление LocalStorage
-    // localStorage.setItem('data', JSON.stringify(this.data));
   }
 
   _handleRemovingOfNote(e) {
-    // this.container.innerHTML = '';
     let idOfNote = e.currentTarget.getAttribute('data-id');
     localStorage.setItem('choosenNoteId', null);
-    // Поиск по Id заметки и удаление ее из данных
-    // this.data.forEach((item, index) => {
-    //   if (idOfNote == item.id) {
-    //     this.data.splice(index, 1);
-    //   }
-    // });
 
     fetch(`http://localhost:8080/api/data/${idOfNote}`, { method: 'DELETE' })
       .then((response) => response.json())
@@ -91,17 +73,11 @@ export class Content {
           this.updateList(data.list);
         }
       });
-
-    // Обновление LocalStorage
-    // localStorage.setItem('data', JSON.stringify(this.data));
-
-    // this.updateList(this.data);
   }
 
   render(noteInfo, updateList) {
     this.noteInfo = noteInfo;
     this.updateList = updateList;
-    // this.data = data;
     this.noteId = noteInfo.id;
 
     this.container.innerHTML = '';

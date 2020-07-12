@@ -139,7 +139,7 @@ var Content = /*#__PURE__*/function () {
     this.container = container;
     this.noteInfo = {};
     this.noteId = null;
-    this.updateList = null; // this.data = [];
+    this.updateList = null;
   }
 
   _createClass(Content, [{
@@ -186,29 +186,15 @@ var Content = /*#__PURE__*/function () {
         });
       }).catch(function (error) {
         return console.error(error);
-      }); // this.data.forEach((item) => {
-      //   if (idOfNote == item.id) {
-      //     titleField.value = item.title;
-      //     containField.value = item.contain;
-      //   }
-      // });
-      // Обновление LocalStorage
-      // localStorage.setItem('data', JSON.stringify(this.data));
+      });
     }
   }, {
     key: "_handleRemovingOfNote",
     value: function _handleRemovingOfNote(e) {
       var _this = this;
 
-      // this.container.innerHTML = '';
       var idOfNote = e.currentTarget.getAttribute('data-id');
-      localStorage.setItem('choosenNoteId', null); // Поиск по Id заметки и удаление ее из данных
-      // this.data.forEach((item, index) => {
-      //   if (idOfNote == item.id) {
-      //     this.data.splice(index, 1);
-      //   }
-      // });
-
+      localStorage.setItem('choosenNoteId', null);
       fetch("http://localhost:8080/api/data/".concat(idOfNote), {
         method: 'DELETE'
       }).then(function (response) {
@@ -219,16 +205,13 @@ var Content = /*#__PURE__*/function () {
         if (_this.updateList) {
           _this.updateList(data.list);
         }
-      }); // Обновление LocalStorage
-      // localStorage.setItem('data', JSON.stringify(this.data));
-      // this.updateList(this.data);
+      });
     }
   }, {
     key: "render",
     value: function render(noteInfo, updateList) {
       this.noteInfo = noteInfo;
-      this.updateList = updateList; // this.data = data;
-
+      this.updateList = updateList;
       this.noteId = noteInfo.id;
       this.container.innerHTML = '';
       var template = "\n    <div>".concat(noteInfo.time, "</div>\n    <p>").concat(noteInfo.contain, "</p>\n  ");
@@ -371,14 +354,6 @@ var _list = require("./list");
 
 var _content = require("./content");
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -389,7 +364,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -408,15 +391,12 @@ var Form = /*#__PURE__*/function () {
     this.form = form;
     this.inputTitle = document.querySelector('#title');
     this.inputContain = document.querySelector('#contain');
-    this.idCounter = localStorage.getItem('id') || 0; // this.data = [];
-
     this.closeButton = document.querySelector('#closeModal');
+    this.idCounter = localStorage.getItem('id') || 0; // счетчик id
+
     this.noteList = document.querySelector('#noteList');
-    this.oneNoteContent = document.querySelector('#oneNoteContent');
-    this.noteEditor = document.querySelector('.contentEditor');
     this.list = new _list.List(this.noteList);
     this.oneNoteContent = document.querySelector('#oneNoteContent');
-    this.content = new _content.Content(this.oneNoteContent);
 
     this._init();
   }
@@ -437,115 +417,34 @@ var Form = /*#__PURE__*/function () {
   }, {
     key: "_handleSubmit",
     value: function _handleSubmit(e) {
-      var _this = this;
+      e.preventDefault();
+      var url = "http://localhost:8080/api/data"; // Получение данных о времени
 
-      e.preventDefault(); // let data = JSON.parse(localStorage.getItem('data')) || [];
-      // Получение данных о времени
+      var timeData = this._getDate(); // Проверка: редактирование или добавление заметки
 
-      var timeData = this._getDate();
-
-      var noteId = localStorage.getItem('choosenNoteId'); // Проверка: редактирование или добавление заметки
 
       if (!this.oneNoteContent.classList.contains('underEdition')) {
-        // data.push({
-        //   // title: this.inputTitle.value,
-        //   // content: this.inputContain.value,
-        //   time: timeData,
-        //   id: this.idCounter,
-        // });
-        var elem = {};
-        var formDa = new FormData(this.form);
+        var newNoteData = this._сreateNoteData(timeData, this.idCounter); // Создание объекта
 
-        var _iterator = _createForOfIteratorHelper(formDa),
-            _step;
 
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var _step$value = _slicedToArray(_step.value, 2),
-                name = _step$value[0],
-                value = _step$value[1];
+        this._editListOfNotes(url, 'POST', newNoteData);
 
-            elem[name] = value;
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-
-        elem.time = timeData;
-        elem.id = this.idCounter;
-        ++this.idCounter;
-        localStorage.setItem('id', this.idCounter);
-        fetch('http://localhost:8080/api/data', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json;charset=utf-8'
-          },
-          body: JSON.stringify(elem)
-        }).then(function (response) {
-          return response.json();
-        }).then(function (data) {
-          return _this.list.render(data.list);
-        }).catch(function (error) {
-          return console.error(error);
-        });
+        localStorage.setItem('id', ++this.idCounter); // Обновляем счетчик id
       } else {
-        // Поиск заметки по Id и ее изменение
-        // data.forEach((item, index) => {
-        //   if (noteId == item.id) {
-        //     data[index].title = this.inputTitle.value;
-        //     data[index].content = this.inputContain.value;
-        //     this.content.render(item, null, data);
-        //   }
-        // });
-        var _elem = {};
+        var noteId = localStorage.getItem('choosenNoteId');
+        url = url + "/".concat(noteId);
 
-        var _formDa = new FormData(this.form);
+        var _newNoteData = this._сreateNoteData(timeData, noteId); // Создание объекта
 
-        var _iterator2 = _createForOfIteratorHelper(_formDa),
-            _step2;
 
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var _step2$value = _slicedToArray(_step2.value, 2),
-                _name = _step2$value[0],
-                _value = _step2$value[1];
+        this._editListOfNotes(url, 'PUT', _newNoteData);
 
-            _elem[_name] = _value;
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-
-        _elem.time = timeData;
-        _elem.id = noteId;
-        console.log(_elem);
-        fetch("http://localhost:8080/api/data/".concat(noteId), {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json;charset=utf-8'
-          },
-          body: JSON.stringify(_elem)
-        }).then(function (response) {
-          return response.json();
-        }).then(function (data) {
-          _this.list.render(data.list);
-        }).catch(function (error) {
-          return console.error(error);
-        });
+        this.oneNoteContent.classList.remove('underEdition');
       }
-
-      this.oneNoteContent.classList.remove('underEdition'); // localStorage.setItem('data', JSON.stringify(data));
-      // this.list.render(data);
 
       this._resetForm(this.form);
 
-      $('#formModal').modal('hide'); // let choosenNote = document.getElementById(noteId);
-      // console.log(choosenNote);
-      // if (choosenNote) choosenNote.classList.add('active');
+      $('#formModal').modal('hide');
     }
   }, {
     key: "_resetForm",
@@ -583,6 +482,54 @@ var Form = /*#__PURE__*/function () {
       var minutes = this._parseNumber(now.getMinutes());
 
       return "".concat(day, ".").concat(month, ".").concat(year, " ").concat(hours, ":").concat(minutes);
+    } // Создание или редактирование заметки
+
+  }, {
+    key: "_editListOfNotes",
+    value: function _editListOfNotes(url, verb, newObj) {
+      var _this = this;
+
+      fetch(url, {
+        method: verb,
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(newObj)
+      }).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        return _this.list.render(data.list);
+      }).catch(function (error) {
+        return console.error(error);
+      });
+    } // Создание заметки
+
+  }, {
+    key: "_\u0441reateNoteData",
+    value: function _ReateNoteData(time, noteId) {
+      var newNote = {};
+      var formDa = new FormData(this.form);
+
+      var _iterator = _createForOfIteratorHelper(formDa),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _step$value = _slicedToArray(_step.value, 2),
+              name = _step$value[0],
+              value = _step$value[1];
+
+          newNote[name] = value;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      newNote.time = time;
+      newNote.id = noteId;
+      return newNote;
     }
   }]);
 
@@ -597,8 +544,7 @@ var _list = require("./list");
 
 var _form = require("./form");
 
-// let data = JSON.parse(localStorage.getItem('data')) || [];
-localStorage.setItem('choosenNoteId', null); // Обнулить ид выбранной заметки
+localStorage.setItem('choosenNoteId', null); // Обнулить ид выбранной заметки в списке
 
 var formNode = document.querySelector('form');
 new _form.Form(formNode);
@@ -616,12 +562,7 @@ fetch('http://localhost:8080/api/data', {
   list.render(data.list);
 }).catch(function (error) {
   return console.error(error);
-}); // list.render(data);
-//-------------------------------------------------------
-// import Note from './note.js';
-// let data = JSON.parse(localStorage.getItem('data')) || [];
-// const yourNote = new Note();
-// yourNote.createNoteList(data);
+});
 },{"./list":"src/js/list.js","./form":"src/js/form.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';

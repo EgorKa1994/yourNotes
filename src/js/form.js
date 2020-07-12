@@ -8,19 +8,14 @@ export class Form {
     this.form = form;
     this.inputTitle = document.querySelector('#title');
     this.inputContain = document.querySelector('#contain');
-
-    this.idCounter = localStorage.getItem('id') || 0;
-    // this.data = [];
-
     this.closeButton = document.querySelector('#closeModal');
 
+    this.idCounter = localStorage.getItem('id') || 0; // счетчик id
+
     this.noteList = document.querySelector('#noteList');
-    this.oneNoteContent = document.querySelector('#oneNoteContent');
-    this.noteEditor = document.querySelector('.contentEditor');
     this.list = new List(this.noteList);
 
     this.oneNoteContent = document.querySelector('#oneNoteContent');
-    this.content = new Content(this.oneNoteContent);
 
     this._init();
   }
@@ -36,90 +31,37 @@ export class Form {
 
   _handleCloseModal() {
     this.oneNoteContent.classList.remove('underEdition'); // Индикатор добавления или изменения заметки
-
     this._resetForm(this.form);
   }
 
   _handleSubmit(e) {
     e.preventDefault();
-
-    // let data = JSON.parse(localStorage.getItem('data')) || [];
+    let url = `http://localhost:8080/api/data`;
 
     // Получение данных о времени
     let timeData = this._getDate();
 
-    let noteId = localStorage.getItem('choosenNoteId');
-
     // Проверка: редактирование или добавление заметки
     if (!this.oneNoteContent.classList.contains('underEdition')) {
-      // data.push({
-      //   // title: this.inputTitle.value,
-      //   // content: this.inputContain.value,
-      //   time: timeData,
-      //   id: this.idCounter,
-      // });
-      let elem = {};
-      let formDa = new FormData(this.form);
-      for (let [name, value] of formDa) {
-        elem[name] = value;
-      }
-      elem.time = timeData;
-      elem.id = this.idCounter;
+      let newNoteData = this._сreateNoteData(timeData, this.idCounter); // Создание объекта
 
-      ++this.idCounter;
-      localStorage.setItem('id', this.idCounter);
+      this._editListOfNotes(url, 'POST', newNoteData);
 
-      fetch('http://localhost:8080/api/data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json;charset=utf-8' },
-        body: JSON.stringify(elem),
-      })
-        .then((response) => response.json())
-        .then((data) => this.list.render(data.list))
-        .catch((error) => console.error(error));
+      localStorage.setItem('id', ++this.idCounter); // Обновляем счетчик id
     } else {
-      // Поиск заметки по Id и ее изменение
-      // data.forEach((item, index) => {
-      //   if (noteId == item.id) {
-      //     data[index].title = this.inputTitle.value;
-      //     data[index].content = this.inputContain.value;
-      //     this.content.render(item, null, data);
-      //   }
-      // });
-      let elem = {};
-      let formDa = new FormData(this.form);
-      for (let [name, value] of formDa) {
-        elem[name] = value;
-      }
-      elem.time = timeData;
-      elem.id = noteId;
-      console.log(elem);
+      let noteId = localStorage.getItem('choosenNoteId');
+      url = url + `/${noteId}`;
 
-      fetch(`http://localhost:8080/api/data/${noteId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json;charset=utf-8' },
-        body: JSON.stringify(elem),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          this.list.render(data.list);
-        })
-        .catch((error) => console.error(error));
+      let newNoteData = this._сreateNoteData(timeData, noteId); // Создание объекта
+
+      this._editListOfNotes(url, 'PUT', newNoteData);
+
+      this.oneNoteContent.classList.remove('underEdition');
     }
-
-    this.oneNoteContent.classList.remove('underEdition');
-
-    // localStorage.setItem('data', JSON.stringify(data));
-
-    // this.list.render(data);
 
     this._resetForm(this.form);
 
     $('#formModal').modal('hide');
-
-    // let choosenNote = document.getElementById(noteId);
-    // console.log(choosenNote);
-    // if (choosenNote) choosenNote.classList.add('active');
   }
 
   _resetForm(form) {
@@ -151,5 +93,29 @@ export class Form {
     let minutes = this._parseNumber(now.getMinutes());
 
     return `${day}.${month}.${year} ${hours}:${minutes}`;
+  }
+
+  // Создание или редактирование заметки
+  _editListOfNotes(url, verb, newObj) {
+    fetch(url, {
+      method: verb,
+      headers: { 'Content-Type': 'application/json;charset=utf-8' },
+      body: JSON.stringify(newObj),
+    })
+      .then((response) => response.json())
+      .then((data) => this.list.render(data.list))
+      .catch((error) => console.error(error));
+  }
+
+  // Создание заметки
+  _сreateNoteData(time, noteId) {
+    let newNote = {};
+    let formDa = new FormData(this.form);
+    for (let [name, value] of formDa) {
+      newNote[name] = value;
+    }
+    newNote.time = time;
+    newNote.id = noteId;
+    return newNote;
   }
 }
